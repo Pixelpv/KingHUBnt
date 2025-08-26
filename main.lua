@@ -4,22 +4,8 @@ local function import(file)
     return loadstring(game:HttpGet(url))()
 end
 
--- Importa módulos
+-- importa a interface
 local UI = import("ui.lua")
-local Principal = import("principal.lua")
-local Trazer = import("trazer.lua")
-local Auto = import("auto.lua")
-local Visuais = import("visuais.lua")
-local Configs = import("configs.lua")
-local Security = import("security.lua")
-local Utils = import("utils.lua")
 
--- Inicia o hub
-Security:init()
-UI:Init(Configs:getSettings(), {
-    Principal = Principal,
-    Trazer = Trazer,
-    Auto = Auto,
-    Visuais = Visuais,
-    Configs = Configs
-})
+-- inicializa
+UI:Init()
