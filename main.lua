@@ -4,8 +4,8 @@ local function import(file)
     return loadstring(game:HttpGet(url))()
 end
 
--- importa a interface
+-- importa a interface Orion
 local UI = import("ui.lua")
 
--- inicializa
+-- inicializa a interface
 UI:Init()
