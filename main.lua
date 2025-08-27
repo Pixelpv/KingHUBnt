@@ -4,8 +4,10 @@ local function import(file)
     return loadstring(game:HttpGet(url))()
 end
 
--- importa a interface Orion
-local UI = import("ui.lua")
+-- Delay para garantir que o jogo carregou
+task.spawn(function()
+    task.wait(1) -- espera 1 segundo para CoreGui carregar
 
--- inicializa a interface
-UI:Init()
+    local UI = import("ui.lua")
+    UI:Init()
+end)
