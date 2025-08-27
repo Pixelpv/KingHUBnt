@@ -4,10 +4,15 @@ local function import(file)
     return loadstring(game:HttpGet(url))()
 end
 
--- Delay para garantir que o jogo carregou
+-- Garante que o CoreGui está pronto antes de criar UI
 task.spawn(function()
-    task.wait(1) -- espera 1 segundo para CoreGui carregar
-
+    local player = game.Players.LocalPlayer
+    while not player or not player.PlayerGui do
+        task.wait(0.1)
+    end
+    -- Delay extra pra mobile
+    task.wait(1)
+    
     local UI = import("ui.lua")
     UI:Init()
 end)
