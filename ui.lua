@@ -2,72 +2,77 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 
 local UI = {}
-local Window -- vamos guardar a janela aqui
-local mainFrame -- container principal
+local Window
+local mainGui
 
 function UI:Init()
     -- cria a janela principal
     Window = Library.CreateLib("KingHub - 99 Nights", "DarkTheme")
 
-    -- pega o frame principal (Kavo UI cria dentro de CoreGui)
-    mainFrame = game:GetService("CoreGui"):WaitForChild("KavoUI")
-
-    -- abas principais
+    -- aba Principal
     local PrincipalTab = Window:NewTab("Principal")
-    local ConfigsTab = Window:NewTab("Configs")
-
-    -- seção de testes
-    local TestSection = PrincipalTab:NewSection("Funções de Teste")
-    TestSection:NewButton("Mensagem", "Mostra mensagem no console", function()
+    local TestSec = PrincipalTab:NewSection("Teste")
+    TestSec:NewButton("Mensagem", "Mostra no console", function()
         print("KingHub funcionando ✅")
     end)
 
-    -- seção de configurações do hub
-    local UiSection = ConfigsTab:NewSection("Interface")
+    -- aba Configs
+    local ConfigsTab = Window:NewTab("Configs")
+    local UiSec = ConfigsTab:NewSection("Interface")
 
-    -- minimizar / restaurar
-    UiSection:NewButton("Minimizar", "Esconde o hub temporariamente", function()
-        if mainFrame.Enabled then
-            mainFrame.Enabled = false
+    -- pegar a interface principal do Kavo
+    task.wait(0.5)
+    mainGui = game:GetService("CoreGui"):FindFirstChild("KavoUI")
+
+    -- Minimizar
+    UiSec:NewButton("Minimizar", "Esconde o Hub", function()
+        if mainGui then
+            mainGui.Enabled = false
             print("KingHub minimizado")
         end
     end)
 
-    UiSection:NewButton("Restaurar", "Mostra o hub novamente", function()
-        mainFrame.Enabled = true
-        print("KingHub restaurado")
+    -- Restaurar
+    UiSec:NewButton("Restaurar", "Mostra o Hub", function()
+        if mainGui then
+            mainGui.Enabled = true
+            print("KingHub restaurado")
+        end
     end)
 
-    -- tela cheia (expandir o tamanho)
-    UiSection:NewButton("Tela Cheia", "Expande interface", function()
-        for _,v in pairs(mainFrame:GetDescendants()) do
-            if v:IsA("Frame") and v.Name == "MainFrame" then
-                v.Size = UDim2.new(1,0,1,0) -- ocupa a tela inteira
-                v.Position = UDim2.new(0,0,0,0)
+    -- Tela cheia
+    UiSec:NewButton("Tela Cheia", "Expande a interface", function()
+        if mainGui then
+            local mf = mainGui:FindFirstChildWhichIsA("Frame", true)
+            if mf then
+                mf.Size = UDim2.new(1,0,1,0)
+                mf.Position = UDim2.new(0,0,0,0)
+                print("KingHub em tela cheia")
             end
         end
-        print("KingHub em tela cheia")
     end)
 
-    -- confirmar antes de fechar
-    UiSection:NewButton("Fechar Hub", "Confirma antes de fechar", function()
-        local confirm = Instance.new("Message", workspace)
-        confirm.Text = "Deseja realmente fechar o KingHub? (y/n)"
-
-        -- escuta entrada do jogador
-        local connection
-        connection = game:GetService("UserInputService").InputBegan:Connect(function(input)
-            if input.KeyCode == Enum.KeyCode.Y then
-                mainFrame:Destroy()
-                connection:Disconnect()
-                confirm:Destroy()
-                print("KingHub fechado com sucesso")
-            elseif input.KeyCode == Enum.KeyCode.N then
-                confirm:Destroy()
-                connection:Disconnect()
-                print("Ação cancelada")
-            end
-        end)
+    -- Fechar com confirmação
+    UiSec:NewButton("Fechar Hub", "Confirma antes de fechar", function()
+        if mainGui then
+            local msg = Instance.new("Message", workspace)
+            msg.Text = "Deseja realmente fechar o KingHub? Digite Y ou N"
+            local uis = game:GetService("UserInputService")
+            local conn
+            conn = uis.InputBegan:Connect(function(input, gpe)
+                if gpe then return end
+                if input.KeyCode == Enum.KeyCode.Y then
+                    mainGui:Destroy()
+                    msg:Destroy()
+                    conn:Disconnect()
+                    print("KingHub fechado")
+                elseif input.KeyCode == Enum.KeyCode.N then
+                    msg:Destroy()
+                    conn:Disconnect()
+                    print("Ação cancelada")
+                end
+            end)
+        end
     end)
 end
 
